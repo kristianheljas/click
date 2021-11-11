@@ -130,12 +130,10 @@ def _make_command(
     if isinstance(f, Command):
         raise TypeError("Attempted to convert a callback into a command twice.")
 
-    try:
-        params = f.__click_params__  # type: ignore
-        params.reverse()
+    params = attrs.pop("params", [])
+    if hasattr(f, "__click_params__"):
+        params += reversed(f.__click_params__)  # type: ignore
         del f.__click_params__  # type: ignore
-    except AttributeError:
-        params = []
 
     help = attrs.get("help")
 
